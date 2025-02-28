@@ -40,6 +40,7 @@ class AppointmentController extends Controller
             ],
             [
                 'name.required' => 'A név megadása kötelező',
+                'name.String' => 'A név csak szöveg lehet',
                 'name.max' => 'A név maximum 255 karakter lehet',
                 'barber_id.required' => 'A fodrász megadása kötelező',
                 'barber_id.integer' => 'A fodrász csak szám lehet',
