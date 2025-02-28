@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barber;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreBarberRequest;
 use App\Http\Requests\UpdateBarberRequest;
+use Nette\Schema\ValidationException;
+
 
 class BarberController extends Controller
 {
@@ -13,7 +16,8 @@ class BarberController extends Controller
      */
     public function index()
     {
-        //
+        $barbers = Barber::all();
+        return response()->json($barbers, 200, ["Access-Control-Allow-Origin" => "*"], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -34,11 +38,15 @@ class BarberController extends Controller
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validation error',
+                'message' => 'Validációs hiba',
             ], 400);
         }
 
-        return response()->json($barber, 200, ["Access-Control-Allow-Origin" => "*"], JSON_UNESCAPED_UNICODE);
+       $barber = Barber::create([
+        "barber_name" => $request->input('barber_name'),
+       ]);
+
+       return response()->json(["success" => true, "uzenet" => $barber->barber_name . " rögzítve!"], 200, ["Access-Control-Allow-Origin" => "*"], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -68,8 +76,10 @@ class BarberController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Barber $barber)
+    public function destroy(Request $request)
     {
-        //
+        $barber = Barber::find($request->id);
+        $barber->delete();
+        return response()->json(["success" => true, "uzenet" => $barber->barber_name . " törölve!"], 200, ["Access-Control-Allow-Origin" => "*"], JSON_UNESCAPED_UNICODE);
     }
 }

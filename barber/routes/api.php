@@ -11,8 +11,8 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/barbers', [BarberController::class, 'index']);
 Route::post('/barbers', [BarberController::class, 'store']);
-Route::delete('/barbers/{barber}', [BarberController::class, 'destroy']);
+Route::delete('/barbers/{id}', [BarberController::class, 'destroy']);
 
 Route::get('appointments', [AppointmentController::class, 'index']);
 Route::post('appointments', [AppointmentController::class, 'store']);
-Route::delete('appointments/{appointment}', [AppointmentController::class, 'destroy']);
+Route::delete('appointments/{id}', [AppointmentController::class, 'destroy']);

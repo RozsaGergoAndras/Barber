@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use Illuminate\Http\Request;
+use Nette\Schema\ValidationException;
+use App\Models\Barber;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AppointmentController extends Controller
 {
@@ -13,9 +17,9 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        //
+        $appointments = Appointment::all();
+        return response()->json($appointments, 200, ["Access-Control-Allow-Origin" => "*"], JSON_UNESCAPED_UNICODE);
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -27,9 +31,33 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAppointmentRequest $request)
-    {
-        //
+    public function store(Request $request){
+        try {
+            $request->validate([
+                'name' => 'required|max: 255',
+                'barber_id' => 'required|integer',
+                'appointment_date' => 'required|date'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validációs hiba',
+            ], 400);
+        }
+        try {
+            $barber = Barber::findOrFail($request->input('barber_id'));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Ilyen barber nem létezik',
+            ], 400);
+        }
+
+       $appointment = Appointment::create([
+            "name" => $request->input('name'),
+            "barber_id" => $request->input('barber_id'),
+            "appointment_date" => $request->input('appointment_date')
+       ]);
+
+       return response()->json(["succes" => true, "uzenet" => $appointment->name . $appointment->barber_id .  $appointment->appointment_date .  " rögzítve!"], 200, ["Access-Control-Allow-Origin" => "*"], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -59,8 +87,10 @@ class AppointmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Appointment $appointment)
+    public function destroy(Request $request)
     {
-        //
+        $appointment = appointment::find($request->id);
+        $appointment->delete();
+        return response()->json(["success" => true, "uzenet" => $appointment->appointment_date . "+" .$appointment->name . " törölve!"], 200, ["Access-Control-Allow-Origin" => "*"], JSON_UNESCAPED_UNICODE);
     }
 }
