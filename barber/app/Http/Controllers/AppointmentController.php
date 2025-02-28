@@ -34,13 +34,21 @@ class AppointmentController extends Controller
     public function store(Request $request){
         try {
             $request->validate([
-                'name' => 'required|max: 255',
+                'name' => 'required|string|max: 255',
                 'barber_id' => 'required|integer',
                 'appointment_date' => 'required|date'
+            ],
+            [
+                'name.required' => 'A név megadása kötelező',
+                'name.max' => 'A név maximum 255 karakter lehet',
+                'barber_id.required' => 'A fodrász megadása kötelező',
+                'barber_id.integer' => 'A fodrász csak szám lehet',
+                'appointment_date.required' => 'Az időpont megadása kötelező',
+                'appointment_date.date' => 'Az időpont csak dátum lehet'
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validációs hiba',
+                'message' =>$e->getMessage(),
             ], 400);
         }
         try {

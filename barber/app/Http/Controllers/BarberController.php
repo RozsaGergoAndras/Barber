@@ -34,11 +34,16 @@ class BarberController extends Controller
     public function store(Request $request){
         try {
             $request->validate([
-                'barber_name' => 'required|max: 255'
+                'barber_name' => 'required|String|max: 255'
+            ],
+            [
+                'barber_name.required' => 'A név megadása kötelező',
+                'barber_name.String' => 'A név csak szöveg lehet',
+                'barber_name.max' => 'A név maximum 255 karakter lehet'
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validációs hiba',
+                'message' =>$e->getMessage(),
             ], 400);
         }
 
