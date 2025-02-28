@@ -6,7 +6,7 @@ use App\Models\Barber;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreBarberRequest;
 use App\Http\Requests\UpdateBarberRequest;
-use Nette\Schema\ValidationException;
+use Illuminate\Validation\ValidationException;
 
 
 class BarberController extends Controller

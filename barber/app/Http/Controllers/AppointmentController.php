@@ -6,7 +6,7 @@ use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
 use Illuminate\Http\Request;
-use Nette\Schema\ValidationException;
+use Illuminate\Validation\ValidationException;
 use App\Models\Barber;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
